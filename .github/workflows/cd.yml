@@ -1,0 +1,27 @@
+name: Next.js CD
+on:
+  push:
+    branches: ["deploy"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/ci-cd
+            git pull 
+            git checkout origin/deploy
+            npm install
+            if pm2 list | grep -q "next-app"; then
+              pm2 reload next-app
+            else
+              pm2 start npm --name "next-app" -- start
+            fi

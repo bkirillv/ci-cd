@@ -35,14 +35,23 @@ jobs:
             git checkout deploy || git checkout -b deploy origin/deploy
             git pull origin deploy
             
+            rm -rf node_modules
             npm ci
             
-            export PATH="$PATH:./node_modules/.bin"
-            npm run build
-
+            echo "Building the application"
+            export PATH="$PWD/node_modules/.bin:$PATH"
+            npx next build
+            
+            if [ ! -d ".next" ]; then
+            echo "ERROR: Build failed, .next directory not found"
+            exit 1
+            fi
+            
+            echo "Starting PM2"
             if pm2 list | grep -q "ci-cd"; then
             pm2 reload ci-cd
             else
-            pm2 start npm --name "ci-cd" -- run start
+            NODE_ENV=production pm2 start npm --name "ci-cd" -- run start
             fi
             pm2 save
+

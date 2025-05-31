@@ -39,10 +39,10 @@ jobs:
   
             npm run build
 
-            if pm2 list | grep -q "next-app"; then
-            pm2 reload next-app
+            if pm2 list | grep -q "ci-cd"; then
+            pm2 reload ci-cd
             else
-            pm2 start npm --name "next-app" -- start
+            pm2 start npm --name "ci-cd" -- start
             fi
             pm2 save
 

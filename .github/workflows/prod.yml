@@ -22,4 +22,10 @@ jobs:
           cache: 'npm'
       - run: npm i
       - run: npm run build
-      - run: npm start
+      - run: |
+          if pm2 list | grep -q "next-app"; then
+            pm2 reload next-app
+          else
+            pm2 start npm --name "next-app" -- start
+          fi
+      -  run: pm2 save

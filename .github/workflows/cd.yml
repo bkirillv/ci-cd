@@ -35,14 +35,14 @@ jobs:
             git checkout deploy || git checkout -b deploy origin/deploy
             git pull origin deploy
             
-            npm install
-  
+            npm ci
+            
+            export PATH="$PATH:./node_modules/.bin"
             npm run build
 
             if pm2 list | grep -q "ci-cd"; then
             pm2 reload ci-cd
             else
-            pm2 start npm --name "ci-cd" --start
+            pm2 start npm --name "ci-cd" -- run start
             fi
             pm2 save
-

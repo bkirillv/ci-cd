@@ -24,34 +24,43 @@ jobs:
             curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
             sudo apt-get install -y nodejs
             fi
-            
-            echo "Check PM2"
-            if ! command -v pm2 &> /dev/null; then
-            echo "Install PM2"
-            sudo npm install -g pm2
-            fi
-            
+                    
+            echo "Install modules"        
+            npm i
+            echo "Build server"
+            npm run build
+            echo "Start server"
+            npm start
+
+#            echo "Check PM2"
+#            if ! command -v pm2 &> /dev/null; then
+#            echo "Install PM2"
+#            sudo npm install -g pm2
+#            fi
+
             git fetch origin
             git checkout deploy || git checkout -b deploy origin/deploy
             git pull origin deploy
-            
-            echo "Install modules"
-            npm i
-            
-            echo "Building the application"
-            rm -rf .next
-            npm run build
-            
-            if [ ! -d ".next" ]; then
-            echo "ERROR: Build failed, .next directory not found"
-            exit 1
-            fi
-            
-            echo "Starting PM2"
-            if pm2 list | grep -q "ci-cd"; then
-            pm2 reload ci-cd
-            else
-            NODE_ENV=production pm2 start npm --name "ci-cd" -- run start
-            fi
-            pm2 save
+
+#            echo "Install modules"
+#            npm i
+#
+#            echo "Building the application"
+#            rm -rf .next
+#            npm run build
+#
+#            if [ ! -d ".next" ]; then
+#            echo "ERROR: Build failed, .next directory not found"
+#            exit 1
+#            fi
+#
+#            echo "Starting PM2"
+#            if pm2 list | grep -q "ci-cd"; then
+#            pm2 reload ci-cd
+#            else
+#            NODE_ENV=production pm2 start npm --name "ci-cd" -- run start
+#            fi
+#            pm2 save
+
+
 

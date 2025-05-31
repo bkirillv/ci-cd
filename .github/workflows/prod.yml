@@ -20,7 +20,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - run: npm i --no-fund --no-audit --verbose
+      - name: Next install
+        run: NODE_OPTIONS="--max-old-space-size=1024" npm i next --verbose
+      - name: React & React DOM install
+        run: NODE_OPTIONS="--max-old-space-size=1024" npm i react react-dom --verbose
+      - name: TailwindCSS install
+        run: NODE_OPTIONS="--max-old-space-size=1024" npm i -D tailwindcss @tailwindcss/postcss --verbose
+      - name: TypeScript install
+        run: NODE_OPTIONS="--max-old-space-size=1024" npm i -D typescript @types/node @types/react @types/react-dom --verbose
+      - name: ESLint install
+        run: NODE_OPTIONS="--max-old-space-size=1024" npm i -D eslint eslint-config-next @eslint/eslintrc --verbose
       - run: npm run build
       - run: |
           if pm2 list | grep -q "next-app"; then

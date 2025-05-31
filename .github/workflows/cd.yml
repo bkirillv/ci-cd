@@ -39,6 +39,7 @@ jobs:
             npm i
 
             echo "Building the application"
+            rm -rf .next
             npm run build
 
             echo "Starting PM2"

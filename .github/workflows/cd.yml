@@ -42,7 +42,7 @@ jobs:
             if pm2 list | grep -q "ci-cd"; then
             pm2 reload ci-cd
             else
-            pm2 start npm --name "ci-cd" -- start
+            pm2 start npm --name "ci-cd" --start
             fi
             pm2 save
 

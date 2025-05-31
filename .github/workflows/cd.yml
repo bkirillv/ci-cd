@@ -39,7 +39,7 @@ jobs:
             npm i
             
             echo "Building the application"
-            npx next build
+            npm run build
             
             if [ ! -d ".next" ]; then
             echo "ERROR: Build failed, .next directory not found"

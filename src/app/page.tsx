@@ -24,7 +24,7 @@ export default function Home() {
             Save and see your changes instantly.
           </li>
           <li>
-            Test
+            Test 2
           </li>
         </ol>
 

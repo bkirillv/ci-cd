@@ -17,11 +17,32 @@ jobs:
           port: 22
           script: |
             cd ~/ci-cd
-            git pull 
-            git checkout origin/deploy
-            npm install
-            if pm2 list | grep -q "next-app"; then
-              pm2 reload next-app
-            else
-              pm2 start npm --name "next-app" -- start
+            
+            echo "Check Node.js"
+            if ! command -v node &> /dev/null; then
+            echo "Install Node.js"
+            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+            sudo apt-get install -y nodejs
             fi
+            
+            echo "Check PM2"
+            if ! command -v pm2 &> /dev/null; then
+            echo "Install PM2"
+            sudo npm install -g pm2
+            fi
+            
+            git fetch origin
+            git checkout deploy || git checkout -b deploy origin/deploy
+            git pull origin deploy
+            
+            npm install
+  
+            npm run build
+
+            if pm2 list | grep -q "next-app"; then
+            pm2 reload next-app
+            else
+            pm2 start npm --name "next-app" -- start
+            fi
+            pm2 save
+

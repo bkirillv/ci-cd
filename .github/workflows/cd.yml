@@ -1,7 +1,7 @@
 name: Next.js CD
 on:
   push:
-    branches: ["deploy"]
+    branches: ["main"]
 
 jobs:
   build:
@@ -42,8 +42,8 @@ jobs:
             cd ~/ci-cd
             
             git fetch origin
-            git checkout deploy || git checkout -b deploy origin/deploy
-            git pull origin deploy
+            git checkout main || git checkout -b main origin/main
+            git pull origin main
 
       - name: Install deps
         uses: appleboy/ssh-action@master

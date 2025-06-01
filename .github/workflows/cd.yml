@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy using ssh
+      - name: Check Node.js & PM2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -17,7 +17,7 @@ jobs:
           port: 22
           script: |
             cd ~/ci-cd
-            
+
             echo "Check Node.js"
             if ! command -v node &> /dev/null; then
             echo "Install Node.js"
@@ -30,26 +30,59 @@ jobs:
             echo "Install PM2"
             sudo npm install -g pm2
             fi
-                    
+
+      - name: Update repository
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/ci-cd
+            
             git fetch origin
             git checkout deploy || git checkout -b deploy origin/deploy
             git pull origin deploy
 
-            echo "Install modules"
+      - name: Install deps
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/ci-cd
+            
             npm i
 
-            echo "Building the application"
+      - name: Building app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/ci-cd
+            
             rm -rf .next
             npm run build
 
-            echo "Starting PM2"
+      - name: Start PM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/ci-cd
+            
             if pm2 list | grep -q "ci-cd"; then
             pm2 reload ci-cd
             else
             pm2 start npm --name "ci-cd" -- start
             fi
             pm2 save
-
-
-
-

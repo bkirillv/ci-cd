@@ -26,6 +26,9 @@ export default function Home() {
           <li>
             Test 2
           </li>
+          <li>
+            Test 3
+          </li>
         </ol>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
